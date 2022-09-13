@@ -17,6 +17,11 @@ const routes = [
         name: 'home',
         component: () => import('../views/tableView.vue'),
       },
+      {
+        path: '/grid',
+        name: 'grid',
+        component: () => import('../views/gridView.vue'),
+      },
     ],
   },
 ];

@@ -11,32 +11,22 @@
     >
       <div
         class="BaseSelect__element"
-        @click="switchSelect(0)"
+        @click="switchSelect('')"
       >
         {{ this.default }}
         <arrow-icon class="BaseSelect__arrow" />
       </div>
       <div
-        @click="switchSelect(1)"
+        v-for="(item, index) in array"
+        :key="index"
+        @click="switchSelect(item)"
         :class="{
           'BaseSelect__element': true,
           'BaseSelect__element_active': true,
-          'BaseSelect__element_choosen': isSelect === 'highFirst' && isOpen !== true
+          'BaseSelect__element_choosen': isSelect === item && isOpen !== true
         }"
       >
-        Номер накладной
-        <arrow-down class="BaseSelect__arrow-active" />
-      </div>
-      <div
-        @click="switchSelect(2)"
-        :class="{
-          'BaseSelect__element': true,
-          'BaseSelect__element_active': true,
-          'BaseSelect__element_choosen': isSelect === 'lowFirst' && isOpen !== true
-        }"
-      >
-        Номер накладной
-        <arrow-up class="BaseSelect__arrow-active" />
+        {{ item }}
       </div>
     </div>
   </div>
@@ -45,41 +35,31 @@
 <script>
 import { ref } from 'vue';
 import ArrowIcon from '@/assets/svg/ArrowIcon.vue';
-import ArrowDown from '@/assets/svg/ArrowDown.vue';
-import ArrowUp from '@/assets/svg/ArrowUp.vue';
 
 export default {
   components: {
     ArrowIcon,
-    ArrowDown,
-    ArrowUp,
   },
   props: {
     default: {
       type: String,
       default: 'default',
     },
+    array: {
+      type: Array,
+      default: () => [],
+    },
   },
   setup() {
     const isOpen = ref(false);
-    const isSelect = ref(false);
+    const isSelect = ref('');
 
     function switchOpen() {
       isOpen.value = !isOpen.value;
     }
-    function switchSelect(index) {
-      if (isOpen.value) {
-        if (index === 1) {
-          isSelect.value = 'highFirst';
-          this.$store.commit('SET_SORTBY', isSelect.value);
-        } else if (index === 2) {
-          isSelect.value = 'lowFirst';
-          this.$store.commit('SET_SORTBY', isSelect.value);
-        } else {
-          isSelect.value = 'default';
-          this.$store.commit('SET_SORTBY', isSelect.value);
-        }
-      }
+    function switchSelect(value) {
+      isSelect.value = value;
+      this.$store.commit('SET_TYPE', value);
     }
     return {
       isOpen,
@@ -94,7 +74,7 @@ export default {
 <style lang="scss" scoped>
   .BaseSelect {
     position: relative;
-    width: 232px;
+    width: 248px;
     height: 32px;
     display: inline-block;
     position: relative;
@@ -139,8 +119,8 @@ export default {
       align-items: center;
       position: relative;
       z-index: 4;
-      color: #2B2839;
-      font-weight: 700;
+      color: #A5A5A5;
+      font-weight: 400;
       font-size: 14px;
       line-height: 16px;
       &_active {
